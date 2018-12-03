@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,14 +7,32 @@ using UnityEngine.UI;
 public class CubeController : MonoBehaviour{
 
     public int population;
-    private Text populatiopnText;
+    private Text populationText;
+    private Text wareText;
+
+    public Ware ware1;
+    public Ware ware2;
+    public Ware ware3;
 
     private GameController gameController;
 
     private void Start()
     {
-        populatiopnText = this.gameObject.GetComponentInChildren<Text>();
-        populatiopnText.text = population.ToString();
+        Text[] childTexts = this.gameObject.GetComponentsInChildren<Text>();
+        foreach (Text childText in childTexts)
+        {
+            if (childText.name.Equals("PopulationText")) {
+                populationText = childText;
+                childText.text = population.ToString();
+            }
+            else if (childText.name.Equals("WarenListe")) {
+                wareText = childText;
+                childText.text =
+                      ware1.name + ": " + ware1.menge + Environment.NewLine
+                    + ware2.name + ": " + ware2.menge + Environment.NewLine
+                    + ware3.name + ": " + ware3.menge;
+            }
+        }
 
         GameObject gameControllerObject = GameObject.FindWithTag("GameController");
         if (gameControllerObject != null)
@@ -24,12 +43,12 @@ public class CubeController : MonoBehaviour{
     private void OnMouseUpAsButton()
     {
         Debug.Log("Selected: " + gameObject.name);
-        calculatePopulation();
     }
 
-    public void calculatePopulation()
+    public void calculatePopulation(float randomFactor)
     {
-        population--;
-        populatiopnText.text = population.ToString();
+        float tempPopulation = population * randomFactor;
+        population = (int) tempPopulation;
+        populationText.text = population.ToString();
     }
 }
